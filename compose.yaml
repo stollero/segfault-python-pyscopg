@@ -9,6 +9,18 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    command: gunicorn -w 4 -b :8000 app:app
+    ports:
+      - 8000:8000
+
+  consumer:
+    build:
+      context: consumer
+    depends_on:
+      - backend
+    deploy:
+      replicas: 10
+
 
   db:
     image: postgres
