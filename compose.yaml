@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: backend
+    environment:
+      - POSTGRES_PASSWORD=example
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres
+    restart: always
+    user: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./sql/create.sql:/docker-entrypoint-initdb.d/create.sql
+      - ./sql/fill.sql:/docker-entrypoint-initdb.d/fill.sql
+    environment:
+      - POSTGRES_DB=example
+      - POSTGRES_PASSWORD=example
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db-data:
