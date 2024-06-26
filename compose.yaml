@@ -4,6 +4,8 @@ services:
       context: backend
     environment:
       - POSTGRES_PASSWORD=example
+      - PYTHONFAULTHANDLER=1
+      - MALLOC_CHECK_=3
     depends_on:
       db:
         condition: service_healthy
